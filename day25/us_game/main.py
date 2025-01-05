@@ -22,12 +22,7 @@ def write_answer(turtle, answer, x, y):
 
 
 def to_learn(correct_guesses, df):
-    states_to_learn = []
-    for state in df.state:
-        if state not in correct_guesses:
-            states_to_learn.append(state)
-        else:
-            continue
+    states_to_learn = [state for state in df.state if state not in correct_guesses]
     pd.DataFrame(states_to_learn, columns=["state"]).to_csv("states_to_learn.csv")
 
 
