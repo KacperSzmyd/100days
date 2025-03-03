@@ -28,6 +28,11 @@ billboard_webpage = response.text
 soup = BeautifulSoup(billboard_webpage, "html.parser")
 
 titles = [title.text.strip() for title in soup.select(selector="li ul li h3")]
+artists = [
+    artist.text.strip()
+    for artist in soup.select(selector="li ul li span.c-label.a-no-trucate")
+]
+queries = [f"{artists[x]}, {titles[x]}" for x in range(len(titles))]
 
 sp = spotipy.Spotify(
     auth_manager=SpotifyOAuth(
@@ -49,11 +54,8 @@ playlist = sp.user_playlist_create(
     description=f"top 100 songs from {timestamp}",
 )
 
-print(playlist["id"])
-
 tracks_uris = []
-
-for song in titles:
+for song in queries:
     song_data = sp.search(song, limit=2)
     try:
         song_uri = song_data["tracks"]["items"][0]["uri"]
